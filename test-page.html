@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VocabHunter 测试页面</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            color: #3498db;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+        .highlight-demo {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .instructions {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .word-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .word-tag {
+            background: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 VocabHunter 测试页面</h1>
+        
+        <div class="instructions">
+            <strong>使用说明：</strong>
+            <ol>
+                <li>选中下面任何一个英文单词</li>
+                <li>右键点击选择"保存单词到词汇本"</li>
+                <li>观察单词是否被高亮显示</li>
+                <li>点击插件图标查看保存的单词</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Academic Reading Passage</h2>
+            <p>
+                The <strong>phenomenon</strong> of climate change has become increasingly <strong>apparent</strong> 
+                in recent decades. Scientists have been <strong>analyzing</strong> various <strong>indicators</strong> 
+                to understand the <strong>magnitude</strong> of environmental changes occurring worldwide.
+            </p>
+            <p>
+                <strong>Research</strong> has shown that the <strong>accumulation</strong> of greenhouse gases 
+                in the atmosphere is the primary <strong>catalyst</strong> for global warming. This process 
+                has <strong>accelerated</strong> due to human <strong>activities</strong> such as 
+                <strong>deforestation</strong> and industrial <strong>emissions</strong>.
+            </p>
+            <p>
+                The <strong>consequences</strong> of climate change are <strong>multifaceted</strong> and 
+                <strong>unprecedented</strong>. They include rising sea levels, extreme weather patterns, 
+                and the <strong>disruption</strong> of <strong>ecosystems</strong> around the globe.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>Technical Vocabulary</h2>
+            <div class="highlight-demo">
+                <p>
+                    Modern <strong>algorithms</strong> utilize sophisticated <strong>methodologies</strong> 
+                    to process vast amounts of data. The <strong>implementation</strong> of machine learning 
+                    <strong>techniques</strong> has revolutionized how we approach complex problems.
+                </p>
+                <p>
+                    <strong>Optimization</strong> strategies often involve <strong>iterative</strong> processes 
+                    that gradually <strong>converge</strong> toward optimal solutions. These 
+                    <strong>computational</strong> approaches require careful <strong>calibration</strong> 
+                    of various <strong>parameters</strong>.
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Common Academic Words</h2>
+            <div class="word-list">
+                <span class="word-tag">analyze</span>
+                <span class="word-tag">significant</span>
+                <span class="word-tag">demonstrate</span>
+                <span class="word-tag">establish</span>
+                <span class="word-tag">comprehensive</span>
+                <span class="word-tag">substantial</span>
+                <span class="word-tag">fundamental</span>
+                <span class="word-tag">hypothesis</span>
+                <span class="word-tag">methodology</span>
+                <span class="word-tag">interpretation</span>
+                <span class="word-tag">correlation</span>
+                <span class="word-tag">evaluation</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Literature Sample</h2>
+            <p>
+                The <strong>protagonist</strong> found herself in a <strong>precarious</strong> situation, 
+                where every decision carried <strong>profound</strong> implications. Her 
+                <strong>contemplation</strong> of the circumstances revealed the <strong>complexity</strong> 
+                of human nature and the <strong>ambiguity</strong> of moral choices.
+            </p>
+            <p>
+                The author's <strong>eloquent</strong> prose <strong>illuminated</strong> themes of 
+                <strong>resilience</strong> and <strong>perseverance</strong> throughout the narrative. 
+                Each chapter <strong>unveiled</strong> new layers of meaning, creating a rich 
+                <strong>tapestry</strong> of human experience.
+            </p>
+        </div>
+
+        <div class="instructions">
+            <strong>测试建议：</strong>
+            <ul>
+                <li>尝试保存不同难度的单词</li>
+                <li>测试高亮功能是否正常工作</li>
+                <li>在插件弹窗中管理保存的单词</li>
+                <li>测试导出功能</li>
+                <li>尝试切换高亮开关</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

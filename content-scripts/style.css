@@ -1,0 +1,24 @@
+/* content-scripts/style.css */
+/* 高亮已保存单词的样式 */
+.vocab-highlight {
+  background-color: #ffeb3b !important;
+  border-bottom: 2px solid #ff9800 !important;
+  padding: 1px 2px !important;
+  border-radius: 3px !important;
+  font-weight: 500 !important;
+  cursor: help !important;
+  transition: all 0.2s ease !important;
+}
+
+.vocab-highlight:hover {
+  background-color: #ffc107 !important;
+  border-bottom-color: #f57c00 !important;
+  transform: scale(1.02) !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+/* 确保高亮样式优先级足够高 */
+* .vocab-highlight {
+  background-color: #ffeb3b !important;
+  border-bottom: 2px solid #ff9800 !important;
+}

@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "VocabHunter",
+
+  "version": "1.0",
+
+  "description": "One-click save, translate, and review words from any webpage",
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+
+  "permissions": ["activeTab", "tabs", "storage", "scripting", "contextMenus", "notifications"],
+
+  "action": {
+    "default_icon": "icons/icon16.png",
+    "default_popup": "popup/popup.html",
+    "default_title": "VocabHunter"
+  },
+
+  "background": {
+    "service_worker": "background/sw.js",
+    "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-scripts/main.js"],
+      "css": ["content-scripts/style.css"],
+      "run_at": "document_end"
+    }
+  ]
+}
