@@ -107,21 +107,9 @@ async function exportWordsToTxt() {
     const result = await chrome.storage.local.get(['vocabList']);
     const vocabList = result.vocabList || {};
     
-    let txtContent = '# VocabHunter 词汇本\n\n';
-    txtContent += `导出时间: ${new Date().toLocaleString()}\n`;
-    txtContent += `总单词数: ${Object.keys(vocabList).length}\n\n`;
-    txtContent += '---\n\n';
-    
-    for (const [word, data] of Object.entries(vocabList)) {
-      txtContent += `单词: ${word}\n`;
-      txtContent += `保存时间: ${new Date(data.savedAt).toLocaleString()}\n`;
-      txtContent += `来源网页: ${data.fromUrl}\n`;
-      txtContent += `复习次数: ${data.reviewCount}\n`;
-      if (data.lastReview) {
-        txtContent += `最后复习: ${new Date(data.lastReview).toLocaleString()}\n`;
-      }
-      txtContent += '\n';
-    }
+    // 只输出单词，每行一个，按字母顺序排序
+    const words = Object.keys(vocabList).sort();
+    const txtContent = words.join('\n');
     
     return { content: txtContent, filename: `vocab_${Date.now()}.txt` };
   } catch (error) {
