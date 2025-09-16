@@ -73,6 +73,47 @@ body {
   background: #e0e0e0;
 }
 
+.export-group {
+  position: relative;
+  flex: 1;
+}
+
+.export-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+  margin-top: 2px;
+}
+
+.export-option {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.export-option:hover {
+  background: #f5f5f5;
+}
+
+.export-option:first-child {
+  border-radius: 6px 6px 0 0;
+}
+
+.export-option:last-child {
+  border-radius: 0 0 6px 6px;
+}
+
 .search-box {
   background: rgba(255, 255, 255, 0.95);
   padding: 12px 20px;
@@ -150,6 +191,18 @@ body {
   margin-bottom: 4px;
 }
 
+.word-translation {
+  font-size: 14px;
+  color: #2196F3;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.word-translation.no-translation {
+  color: #999;
+  font-style: italic;
+}
+
 .word-meta {
   font-size: 12px;
   color: #666;
@@ -192,6 +245,31 @@ body {
 .review-btn:hover {
   background: #4caf50;
   color: white;
+}
+
+.translate-btn {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.translate-btn:hover {
+  background: #2196f3;
+  color: white;
+}
+
+.retranslate-btn {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.retranslate-btn:hover {
+  background: #ff9800;
+  color: white;
+}
+
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .loading {

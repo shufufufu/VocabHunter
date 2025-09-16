@@ -11,6 +11,8 @@ const elements = {
   toggleHighlight: document.getElementById('toggleHighlight'),
   highlightText: document.getElementById('highlightText'),
   exportBtn: document.getElementById('exportBtn'),
+  exportMenu: document.getElementById('exportMenu'),
+  batchTranslateBtn: document.getElementById('batchTranslateBtn'),
   refreshBtn: document.getElementById('refreshBtn'),
   searchInput: document.getElementById('searchInput'),
   clearSearch: document.getElementById('clearSearch'),
@@ -82,20 +84,35 @@ function renderWordList() {
     const savedDate = new Date(data.savedAt).toLocaleDateString();
     const domain = extractDomain(data.fromUrl);
     
+    // 处理翻译显示
+    const translationHtml = data.translation 
+      ? `<div class="word-translation">${data.translation}</div>`
+      : '<div class="word-translation no-translation">暂无翻译</div>';
+    
     return `
       <div class="word-item" data-word="${word}">
         <div class="word-info">
           <div class="word-text">${word}</div>
+          ${translationHtml}
           <div class="word-meta">
             ${savedDate} • 来自 ${domain}<br>
             复习 ${data.reviewCount} 次
             ${data.lastReview ? `• 最后复习 ${new Date(data.lastReview).toLocaleDateString()}` : ''}
+            ${data.translatedAt ? `<br>翻译时间: ${new Date(data.translatedAt).toLocaleDateString()}` : ''}
           </div>
         </div>
         <div class="word-actions">
           <button class="action-btn review-btn" data-word="${word}" data-action="review" title="标记为已复习">
             ✓
           </button>
+          ${!data.translation ? 
+            `<button class="action-btn translate-btn" data-word="${word}" data-action="translate" title="获取翻译">
+              🔄
+            </button>` : 
+            `<button class="action-btn retranslate-btn" data-word="${word}" data-action="retranslate" title="重新翻译">
+              🔄
+            </button>`
+          }
           <button class="action-btn delete-btn" data-word="${word}" data-action="delete" title="删除单词">
             ×
           </button>
@@ -124,36 +141,30 @@ function setupEventListeners() {
     }
   });
   
-  // 导出词汇
-  elements.exportBtn.addEventListener('click', async () => {
-    try {
-      elements.exportBtn.textContent = '导出中...';
-      elements.exportBtn.disabled = true;
-      
-      const response = await chrome.runtime.sendMessage({ action: 'exportWords' });
-      
-      if (response.error) {
-        showError('导出失败');
-        return;
-      }
-      
-      // 下载文件
-      const blob = new Blob([response.content], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = response.filename;
-      a.click();
-      URL.revokeObjectURL(url);
-      
-      showSuccess('导出成功！');
-    } catch (error) {
-      console.error('Error exporting words:', error);
-      showError('导出失败');
-    } finally {
-      elements.exportBtn.textContent = '导出词汇';
-      elements.exportBtn.disabled = false;
+  // 导出词汇 - 切换菜单显示
+  elements.exportBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isVisible = elements.exportMenu.style.display === 'block';
+    elements.exportMenu.style.display = isVisible ? 'none' : 'block';
+  });
+  
+  // 点击其他地方关闭导出菜单
+  document.addEventListener('click', () => {
+    elements.exportMenu.style.display = 'none';
+  });
+  
+  // 导出选项点击事件
+  elements.exportMenu.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('export-option')) {
+      const format = e.target.getAttribute('data-format');
+      elements.exportMenu.style.display = 'none';
+      await exportWords(format);
     }
+  });
+  
+  // 批量翻译
+  elements.batchTranslateBtn.addEventListener('click', async () => {
+    await batchTranslateWords();
   });
   
   // 刷新
@@ -199,6 +210,10 @@ function setupEventListeners() {
           reviewWord(word);
         } else if (action === 'delete') {
           deleteWord(word);
+        } else if (action === 'translate') {
+          translateWord(word);
+        } else if (action === 'retranslate') {
+          retranslateWord(word);
         }
       }
     }
@@ -282,6 +297,184 @@ async function deleteWord(word) {
   } catch (error) {
     console.error('Error deleting word:', error);
     showError('删除失败');
+  }
+}
+
+// 翻译单词
+async function translateWord(word) {
+  try {
+    console.log('Translating word:', word);
+    
+    // 找到对应的按钮并显示加载状态
+    const button = document.querySelector(`[data-word="${word}"][data-action="translate"]`);
+    if (button) {
+      button.textContent = '...';
+      button.disabled = true;
+    }
+    
+    const response = await chrome.runtime.sendMessage({
+      action: 'translateWord',
+      word: word
+    });
+    
+    if (response.success && response.translation) {
+      // 更新本地数据
+      if (vocabList[word]) {
+        vocabList[word].translation = response.translation;
+        vocabList[word].translatedAt = new Date().toISOString();
+      }
+      
+      updateUI();
+      showSuccess(`单词 "${word}" 翻译成功！`);
+    } else {
+      showError('翻译失败，请检查翻译服务');
+    }
+  } catch (error) {
+    console.error('Error translating word:', error);
+    showError('翻译失败');
+  }
+}
+
+// 重新翻译单词
+async function retranslateWord(word) {
+  try {
+    console.log('Retranslating word:', word);
+    
+    // 找到对应的按钮并显示加载状态
+    const button = document.querySelector(`[data-word="${word}"][data-action="retranslate"]`);
+    if (button) {
+      button.textContent = '...';
+      button.disabled = true;
+    }
+    
+    const response = await chrome.runtime.sendMessage({
+      action: 'retranslateWord',
+      word: word
+    });
+    
+    if (response.success && response.translation) {
+      // 更新本地数据
+      if (vocabList[word]) {
+        vocabList[word].translation = response.translation;
+        vocabList[word].translatedAt = new Date().toISOString();
+      }
+      
+      updateUI();
+      showSuccess(`单词 "${word}" 重新翻译成功！`);
+    } else {
+      showError('重新翻译失败，请检查翻译服务');
+    }
+  } catch (error) {
+    console.error('Error retranslating word:', error);
+    showError('重新翻译失败');
+  }
+}
+
+// 导出词汇函数
+async function exportWords(format) {
+  try {
+    console.log('Exporting words with format:', format);
+    
+    const formatNames = {
+      'words-only': '仅单词',
+      'with-translation': '单词+翻译',
+      'detailed': '详细信息'
+    };
+    
+    // 显示导出状态
+    const originalText = elements.exportBtn.textContent;
+    elements.exportBtn.textContent = `导出${formatNames[format]}中...`;
+    elements.exportBtn.disabled = true;
+    
+    const response = await chrome.runtime.sendMessage({ 
+      action: 'exportWords',
+      format: format 
+    });
+    
+    if (response.error) {
+      showError('导出失败');
+      return;
+    }
+    
+    // 下载文件
+    const blob = new Blob([response.content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = response.filename;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showSuccess(`${formatNames[format]}导出成功！`);
+  } catch (error) {
+    console.error('Error exporting words:', error);
+    showError('导出失败');
+  } finally {
+    elements.exportBtn.textContent = '导出词汇 ▼';
+    elements.exportBtn.disabled = false;
+  }
+}
+
+// 批量翻译所有没有翻译的单词
+async function batchTranslateWords() {
+  try {
+    console.log('Starting batch translation...');
+    
+    // 显示加载状态
+    const originalText = elements.batchTranslateBtn.textContent;
+    elements.batchTranslateBtn.textContent = '批量翻译中...';
+    elements.batchTranslateBtn.disabled = true;
+    
+    // 统计需要翻译的单词数量
+    const wordsWithoutTranslation = Object.keys(vocabList).filter(word => 
+      !vocabList[word].translation || vocabList[word].translation === ''
+    );
+    
+    if (wordsWithoutTranslation.length === 0) {
+      showSuccess('所有单词都已有翻译！');
+      return;
+    }
+    
+    elements.batchTranslateBtn.textContent = `翻译中... (0/${wordsWithoutTranslation.length})`;
+    
+    const response = await chrome.runtime.sendMessage({
+      action: 'batchTranslate'
+    });
+    
+    if (response.success) {
+      // 重新加载词汇列表以显示新的翻译
+      await loadVocabList();
+      
+      if (response.count > 0) {
+        showSuccess(`批量翻译完成！成功翻译 ${response.count} 个单词`);
+      } else {
+        showSuccess(response.message);
+      }
+      
+      // 通知所有标签页刷新高亮（如果有新翻译的话）
+      if (response.count > 0) {
+        try {
+          const tabs = await chrome.tabs.query({});
+          for (const tab of tabs) {
+            try {
+              await chrome.tabs.sendMessage(tab.id, { action: 'refreshHighlights' });
+            } catch (error) {
+              // 忽略无法发送消息的标签页
+            }
+          }
+        } catch (error) {
+          console.error('Error refreshing highlights after batch translation:', error);
+        }
+      }
+    } else {
+      showError(`批量翻译失败：${response.error}`);
+    }
+  } catch (error) {
+    console.error('Error in batch translation:', error);
+    showError('批量翻译失败');
+  } finally {
+    elements.batchTranslateBtn.textContent = '批量翻译';
+    elements.batchTranslateBtn.disabled = false;
   }
 }
 

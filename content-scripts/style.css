@@ -22,3 +22,64 @@
   background-color: #ffeb3b !important;
   border-bottom: 2px solid #ff9800 !important;
 }
+
+/* 气泡提示样式 */
+.vocab-tooltip {
+  position: absolute;
+  background: rgba(45, 45, 45, 0.95);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10000;
+  max-width: 180px;
+  word-wrap: break-word;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+}
+
+.vocab-tooltip-translation {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #ffffff;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* 气泡提示箭头效果 */
+.vocab-tooltip::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(45, 45, 45, 0.95);
+}
+
+/* 当气泡在下方时的箭头 */
+.vocab-tooltip.below::before {
+  top: -12px;
+  border-top-color: transparent;
+  border-bottom-color: rgba(45, 45, 45, 0.95);
+}
+
+/* 气泡出现动画 */
+.vocab-tooltip {
+  animation: tooltipFadeIn 0.2s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

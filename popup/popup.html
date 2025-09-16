@@ -17,7 +17,15 @@
     <button id="toggleHighlight" class="btn btn-primary">
       <span id="highlightText">关闭高亮</span>
     </button>
-    <button id="exportBtn" class="btn btn-secondary">导出词汇</button>
+    <div class="export-group">
+      <button id="exportBtn" class="btn btn-secondary">导出词汇 ▼</button>
+      <div id="exportMenu" class="export-menu" style="display: none;">
+        <button class="export-option" data-format="words-only">仅单词</button>
+        <button class="export-option" data-format="with-translation">单词+翻译</button>
+        <button class="export-option" data-format="detailed">详细信息</button>
+      </div>
+    </div>
+    <button id="batchTranslateBtn" class="btn btn-secondary">批量翻译</button>
     <button id="refreshBtn" class="btn btn-secondary">刷新</button>
   </div>
 
