@@ -1,6 +1,3 @@
-// content-scripts/main.js
-console.log('VocabHunter content script loaded');
-
 let vocabList = {};
 let isHighlightEnabled = true;
 
@@ -231,9 +228,38 @@ function setupHighlightEvents() {
   let showTimeout = null;
   let hideTimeout = null;
   
+  // 辅助函数：安全检查元素
+  function isVocabHighlight(element) {
+    return element && element.nodeType === Node.ELEMENT_NODE && 
+           element.classList && element.classList.contains('vocab-highlight');
+  }
+  
+  // 辅助函数：检查是否在气泡内
+  function isInTooltip(element) {
+    if (!element || !element.nodeType) return false;
+    
+    // 检查元素本身是否是气泡
+    if (element.classList && element.classList.contains('vocab-tooltip')) {
+      return true;
+    }
+    
+    // 向上查找父元素
+    let parent = element.parentElement;
+    while (parent) {
+      if (parent.classList && parent.classList.contains('vocab-tooltip')) {
+        return true;
+      }
+      parent = parent.parentElement;
+    }
+    
+    return false;
+  }
+  
   // 使用事件委托处理鼠标事件
   document.addEventListener('mouseenter', (e) => {
-    if (e.target.classList.contains('vocab-highlight')) {
+    if (!e.target) return;
+    
+    if (isVocabHighlight(e.target)) {
       // 清除之前的隐藏定时器
       if (hideTimeout) {
         clearTimeout(hideTimeout);
@@ -255,7 +281,9 @@ function setupHighlightEvents() {
   }, true);
   
   document.addEventListener('mouseleave', (e) => {
-    if (e.target.classList.contains('vocab-highlight')) {
+    if (!e.target) return;
+    
+    if (isVocabHighlight(e.target)) {
       // 清除显示定时器
       if (showTimeout) {
         clearTimeout(showTimeout);
@@ -271,7 +299,9 @@ function setupHighlightEvents() {
   
   // 鼠标移入气泡时保持显示
   document.addEventListener('mouseenter', (e) => {
-    if (e.target.closest('.vocab-tooltip')) {
+    if (!e.target) return;
+    
+    if (isInTooltip(e.target)) {
       // 清除隐藏定时器
       if (hideTimeout) {
         clearTimeout(hideTimeout);
@@ -282,7 +312,9 @@ function setupHighlightEvents() {
   
   // 鼠标离开气泡时移除
   document.addEventListener('mouseleave', (e) => {
-    if (e.target.closest('.vocab-tooltip')) {
+    if (!e.target) return;
+    
+    if (isInTooltip(e.target)) {
       hideTimeout = setTimeout(() => {
         removeTooltip();
       }, 100);
