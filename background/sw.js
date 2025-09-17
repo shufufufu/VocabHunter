@@ -3,7 +3,7 @@ console.log('VocabHunter service worker loaded');
 
 // 翻译服务配置
 const TRANSLATION_CONFIG = {
-  apiUrl: 'http://localhost:3001/api/translate',
+  apiUrl: 'http://47.111.107.83:5001/api/translate',
   enabled: true, // 可以通过设置页面控制
   timeout: 10000
 };
